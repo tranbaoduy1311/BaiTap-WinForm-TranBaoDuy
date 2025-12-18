@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="baitap1/baitap1.csproj" />
+  <Project Path="baitap10/baitap10.csproj" />
+  <Project Path="baitap2/baitap2.csproj" />
+  <Project Path="baitap3/baitap3.csproj" />
+  <Project Path="baitap5/baitap5.csproj" />
+  <Project Path="baitap8/baitap8.csproj" />
+  <Project Path="Example01/baitap6.csproj" />
+</Solution>
