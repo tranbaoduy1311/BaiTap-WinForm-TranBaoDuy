@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-// 1. QUAN TRỌNG: Thêm thư viện này để dùng StreamWriter
+
 using System.IO;
 
 namespace baitap8
@@ -19,12 +19,11 @@ namespace baitap8
             InitializeComponent();
         }
 
-        // Những hàm click thừa (label, y...) bạn có thể để nguyên hoặc xóa đi nếu không dùng
         private void label3_Click(object sender, EventArgs e) { }
         private void y_Click(object sender, EventArgs e) { }
         private void Form1_Load(object sender, EventArgs e) { }
 
-        // 2. Cập nhật nút CỘNG: Cộng dồn lịch sử
+     
         private void btCong_Click(object sender, EventArgs e)
         {
             int x = int.Parse(tbSoX.Text);
@@ -36,7 +35,7 @@ namespace baitap8
             tbKetQua.Text = tbKetQua.Text + x.ToString() + " + " + y.ToString() + " = " + kq.ToString() + "\r\n";
         }
 
-        // 3. Cập nhật nút NHÂN: Cộng dồn lịch sử
+      
         private void btNhan_Click(object sender, EventArgs e)
         {
             int x = int.Parse(tbSoX.Text);
@@ -47,7 +46,7 @@ namespace baitap8
             tbKetQua.Text = tbKetQua.Text + x.ToString() + " * " + y.ToString() + " = " + kq.ToString() + "\r\n";
         }
 
-        // 4. Thêm nút LƯU (Bạn nhớ tạo nút này bên giao diện và đặt tên là btLuu nhé)
+      
         private void btLuu_Click(object sender, EventArgs e)
         {
             try
@@ -69,4 +68,5 @@ namespace baitap8
             this.Close();
         }
     }
+
 }
