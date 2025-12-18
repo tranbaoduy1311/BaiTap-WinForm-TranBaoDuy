@@ -27,20 +27,17 @@ namespace Example01
 
         private void tbYear_KeyPress(object sender, KeyPressEventArgs e)
         {
-            // Kiểm tra: Nếu KHÔNG phải là phím điều khiển (như Backspace) 
-            // VÀ cũng KHÔNG phải là số (Digit)
+           
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
-                // e.Handled = true nghĩa là: "Tôi đã xử lý rồi, đừng in ký tự này ra màn hình"
-                // (Tức là chặn phím đó lại)
+               
                 e.Handled = true;
             }
         }
 
         private void tbYear_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            // Lấy dữ liệu trong ô text và chuyển sang số nguyên
-            // Lưu ý: Nếu ô trống mà chạy dòng này sẽ lỗi, nhưng ta cứ làm theo bài mẫu trước
+            
             if (tbYear.Text.Length > 0)
             {
                 int year = int.Parse(tbYear.Text);
@@ -48,11 +45,11 @@ namespace Example01
                 // Nếu năm lớn hơn 2000
                 if (year > 2000)
                 {
-                    // Cancel = true nghĩa là: "Dữ liệu sai rồi, hủy bỏ việc rời đi"
-                    // Con trỏ chuột sẽ bị kẹt lại trong ô này cho đến khi bạn sửa đúng.
+                   
                     e.Cancel = true;
                 }
             }
         }
     }
+
 }
