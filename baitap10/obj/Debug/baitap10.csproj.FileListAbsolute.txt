@@ -1,0 +1,9 @@
+D:\baitapC#\tranbaoduy\baitap10\obj\Debug\baitap10.csproj.AssemblyReference.cache
+D:\baitapC#\tranbaoduy\baitap10\obj\Debug\baitap10.Properties.Resources.resources
+D:\baitapC#\tranbaoduy\baitap10\obj\Debug\baitap10.csproj.GenerateResource.cache
+D:\baitapC#\tranbaoduy\baitap10\obj\Debug\baitap10.csproj.CoreCompileInputs.cache
+D:\baitapC#\tranbaoduy\baitap10\bin\Debug\baitap10.exe.config
+D:\baitapC#\tranbaoduy\baitap10\bin\Debug\baitap10.exe
+D:\baitapC#\tranbaoduy\baitap10\bin\Debug\baitap10.pdb
+D:\baitapC#\tranbaoduy\baitap10\obj\Debug\baitap10.exe
+D:\baitapC#\tranbaoduy\baitap10\obj\Debug\baitap10.pdb
