@@ -1,17 +1,13 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
+using System.Linq;
 
 namespace baitap11
 {
     public partial class Form1 : Form
     {
-        // --- BIẾN LƯU TRỮ ---
         decimal memory = 0;
-        decimal workingMemory = 0;
-        string opr = "";
-
         TextBox txtDisplay;
 
         public Form1()
@@ -28,7 +24,6 @@ namespace baitap11
 
         private void InitCalculatorUI()
         {
-            // 1. Màn hình hiển thị
             txtDisplay = new TextBox
             {
                 Location = new Point(15, 15),
@@ -41,21 +36,14 @@ namespace baitap11
             txtDisplay.Text = "0";
             this.Controls.Add(txtDisplay);
 
-            // Định nghĩa kích thước chuẩn
-            int btnW = 58;
-            int btnH = 50;
-            int spacing = 6;
-            int startX = 15;
-            int startY = 80;
-
-            // Mảng các nút theo từng hàng để dễ quản lý tọa độ
+            int btnW = 58, btnH = 50, spacing = 6, startX = 15, startY = 80;
             string[][] rows = new string[][] {
                 new string[] { "MC", "MR", "MS", "M+", "M-" },
                 new string[] { "←", "CE", "C", "±", "√" },
                 new string[] { "7", "8", "9", "/", "%" },
                 new string[] { "4", "5", "6", "*", "1/x" },
-                new string[] { "1", "2", "3", "-", "=" }, // Nút = sẽ xử lý riêng
-                new string[] { "0", ".", "+" }             // Nút 0 sẽ xử lý riêng
+                new string[] { "1", "2", "3", "-", "=" },
+                new string[] { "0", ".", "+" }
             };
 
             for (int r = 0; r < rows.Length; r++)
@@ -67,11 +55,9 @@ namespace baitap11
                     {
                         Text = text,
                         Font = new Font("Arial", 10, FontStyle.Bold),
-                        BackColor = Color.FromArgb(245, 245, 245),
-                        FlatStyle = FlatStyle.Standard
+                        BackColor = Color.FromArgb(245, 245, 245)
                     };
 
-                    // TÍNH TOÁN VỊ TRÍ ĐẶC BIỆT
                     if (text == "0")
                     {
                         btn.Size = new Size(btnW * 2 + spacing, btnH);
@@ -94,7 +80,6 @@ namespace baitap11
                     }
                     else
                     {
-                        // Các nút bình thường
                         btn.Size = new Size(btnW, btnH);
                         btn.Location = new Point(startX + c * (btnW + spacing), startY + r * (btnH + spacing));
                     }
@@ -105,56 +90,84 @@ namespace baitap11
             }
         }
 
-        // ================= LOGIC XỬ LÝ (GIỮ NGUYÊN THEO ARTICLE 11) =================
         private void Button_Click(object sender, EventArgs e)
         {
             Button bt = (Button)sender;
             string s = bt.Text;
 
-            // Nhập số
+            // 1. Nhập số và dấu chấm
             if ((char.IsDigit(s, 0) && s.Length == 1) || s == ".")
             {
-                if (txtDisplay.Text == "0" && s != ".") txtDisplay.Clear();
-                if (s == "." && txtDisplay.Text.Contains(".")) return;
-                txtDisplay.Text += s;
+                if (txtDisplay.Text == "0" && s != ".") txtDisplay.Text = s;
+                else txtDisplay.Text += s;
             }
-            // Phép tính
+
+            // 2. Nhập phép tính (Hiện luôn lên màn hình ví dụ: 2+)
             else if (s == "+" || s == "-" || s == "*" || s == "/")
             {
-                opr = s;
-                workingMemory = decimal.Parse(txtDisplay.Text);
-                txtDisplay.Text = "0";
+                // Tránh việc nhập 2 dấu phép tính liên tiếp (ví dụ 2++)
+                char lastChar = txtDisplay.Text[txtDisplay.Text.Length - 1];
+                if ("+-*/".Contains(lastChar))
+                {
+                    txtDisplay.Text = txtDisplay.Text.Remove(txtDisplay.Text.Length - 1) + s;
+                }
+                else
+                {
+                    txtDisplay.Text += s;
+                }
             }
-            // Kết quả
+
+            // 3. Xử lý dấu Bằng (=) - Phân tích chuỗi để tính toán
             else if (s == "=")
             {
-                if (opr == "") return;
-                decimal secondValue = decimal.Parse(txtDisplay.Text);
-                switch (opr)
+                try
                 {
-                    case "+": txtDisplay.Text = (workingMemory + secondValue).ToString(); break;
-                    case "-": txtDisplay.Text = (workingMemory - secondValue).ToString(); break;
-                    case "*": txtDisplay.Text = (workingMemory * secondValue).ToString(); break;
-                    case "/": if (secondValue != 0) txtDisplay.Text = (workingMemory / secondValue).ToString(); break;
+                    string expression = txtDisplay.Text;
+                    char[] operators = { '+', '-', '*', '/' };
+                    int opIndex = expression.IndexOfAny(operators);
+
+                    if (opIndex > 0)
+                    {
+                        string firstPart = expression.Substring(0, opIndex);
+                        string secondPart = expression.Substring(opIndex + 1);
+                        char op = expression[opIndex];
+
+                        decimal v1 = decimal.Parse(firstPart);
+                        decimal v2 = decimal.Parse(secondPart);
+                        decimal result = 0;
+
+                        switch (op)
+                        {
+                            case '+': result = v1 + v2; break;
+                            case '-': result = v1 - v2; break;
+                            case '*': result = v1 * v2; break;
+                            case '/': if (v2 != 0) result = v1 / v2; break;
+                        }
+                        txtDisplay.Text = result.ToString();
+                    }
                 }
-                opr = "";
+                catch
+                {
+                    txtDisplay.Text = "Error";
+                }
             }
-            // Các nút chức năng khác
-            else if (s == "C") { txtDisplay.Text = "0"; workingMemory = 0; opr = ""; }
-            else if (s == "CE") { txtDisplay.Text = "0"; }
+
+            // 4. Các nút chức năng khác
+            else if (s == "C" || s == "CE") { txtDisplay.Text = "0"; }
             else if (s == "←")
             {
-                if (txtDisplay.Text.Length > 0) txtDisplay.Text = txtDisplay.Text.Remove(txtDisplay.Text.Length - 1);
-                if (txtDisplay.Text == "") txtDisplay.Text = "0";
+                if (txtDisplay.Text.Length > 1) txtDisplay.Text = txtDisplay.Text.Remove(txtDisplay.Text.Length - 1);
+                else txtDisplay.Text = "0";
             }
-            else if (s == "±") { txtDisplay.Text = (-decimal.Parse(txtDisplay.Text)).ToString(); }
-            else if (s == "√") { txtDisplay.Text = Math.Sqrt((double)decimal.Parse(txtDisplay.Text)).ToString(); }
-            else if (s == "%") { txtDisplay.Text = (decimal.Parse(txtDisplay.Text) / 100).ToString(); }
-            else if (s == "1/x") { txtDisplay.Text = (1 / decimal.Parse(txtDisplay.Text)).ToString(); }
-            // Bộ nhớ
+            else if (s == "±")
+            {
+                // Đảo dấu kết quả hiện tại
+                decimal val = decimal.Parse(txtDisplay.Text);
+                txtDisplay.Text = (-val).ToString();
+            }
             else if (s == "MC") memory = 0;
             else if (s == "MR") txtDisplay.Text = memory.ToString();
-            else if (s == "MS") { memory = decimal.Parse(txtDisplay.Text); txtDisplay.Text = "0"; }
+            else if (s == "MS") memory = decimal.Parse(txtDisplay.Text);
             else if (s == "M+") memory += decimal.Parse(txtDisplay.Text);
             else if (s == "M-") memory -= decimal.Parse(txtDisplay.Text);
         }
